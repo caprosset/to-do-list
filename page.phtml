@@ -1,0 +1,138 @@
+<!-- Affichage de la todolist -->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+</head>
+
+<body>
+
+	<h1>MA TO-DO LIST</h1>
+
+	<h2>Mes taches en cours :</h2>
+	
+	<form method="POST" action="remove-checked.php">
+		<?php
+		for ($i=0; $i < count($toutesLesTaches); $i++){ 
+		//var_dump($uneTache);
+			$uneTache = $toutesLesTaches[$i];
+
+			echo "<input type='checkbox' name='delete[]' value='$i'>" . $uneTache[0] . " - ";//titre
+			echo $uneTache[1] . " - ";//description
+			echo $uneTache[2] . " - ";//date
+				
+			if($uneTache[3] == "low"){
+				echo "<font color='green'>$uneTache[3]</font>";
+			}elseif($uneTache[3] == "medium"){
+				echo "<font color='orange'>$uneTache[3]</font>";
+			}elseif($uneTache[3] == "high"){
+				echo "<font color='red'>$uneTache[3]</font>";
+			}//priorite
+			
+			$now = time();
+			$expire = strtotime($uneTache[2]);
+			if ($now >= $expire) {
+				echo " EN RETARD !";
+			}		
+			echo "<br>"; 
+
+		}
+		?>
+
+		<button>Supprimer</button>
+	</form>
+	<br>
+
+	<a href="remove-all.php">Supprimer tout</a>
+
+	<?php 
+		if (array_key_exists("success", $_GET)) 
+		{ 
+		echo "Votre tâche a bien été ajoutée"; 
+		}elseif (array_key_exists("deleteall", $_GET)) 
+		{ 
+		echo "<script>alert(\"Toutes vos tâches ont bien été supprimées\")</script>";
+		}elseif (array_key_exists("delete", $_GET)) 
+		{ 
+		echo "Vos tâches ont bien été supprimées";
+		}
+		echo "<br>";
+	?>
+	
+	
+	<?php
+		echo "Nombre de taches: " . count($toutesLesTaches);
+	?>
+
+	<h2>Creer une nouvelle tache :</h2>
+	
+	<form method="POST" action="ajout.php">
+		<label>Titre</label>
+		<input type="text" name="title" required maxlength=250>
+
+		<br>
+
+		<label>Description</label>
+		<textarea placeholder="Votre tâche" name="description" required></textarea>
+		
+		<br>
+
+		<label>Deadline</label>
+
+		<!-- DAY -->
+		<select name="day">
+		<?php
+		for($day=1; $day<32; $day++){
+			echo "<option value='" .$day. "'>" .$day. "</option>";
+		}?>
+		</select>
+
+		<!-- Autre méthode pour inclure une boucle for (php) dans le champ "select" -->
+		<!-- <select name="day">
+			<?php for($day=1; $day<32; $day++): ?>
+			<option value="<?php echo $day; ?>"><?php echo $day; ?></option>
+			<?php endfor; ?>
+		</select> -->
+
+		<!-- MONTH -->
+		<select name="month">
+			<option value="jan">Janvier</option>
+			<option value="fev">Février</option>
+			<option value="mar">Mars</option>
+			<option value="avr">Avril</option>
+			<option value="mai">Mai</option>
+			<option value="jun">Juin</option>
+			<option value="jul">Juillet</option>
+			<option value="aug">Août</option>
+			<option value="sept">Septembre</option>
+			<option value="oct">Octobre</option>
+			<option value="nov">Novembre</option>
+			<option value="dec">Décembre</option>
+		</select>
+
+		<!-- YEAR -->
+		<select name="year">
+		<?php
+		for($year=date('Y'); $year<date('Y')+11; $year++){
+			echo "<option value='" .$year. "'>" .$year. "</option>";
+		}?>
+		</select>
+
+		<br>
+
+		<label>Priorite</label>
+		<select name="priority">
+			<option value="low">Faible</option>
+			<option value="medium">Moyen</option>
+			<option value="high">Urgent</option>
+		</select>
+
+		<br>
+
+		<button>Valider</button>
+	</form>  
+
+</body>
+
+</html>
